@@ -1,0 +1,28 @@
+{
+  "name": "carono/yii2-site-parser",
+  "description": "Yii2 site parser client",
+  "type": "yii2-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Aleksandr Kasyanov",
+      "email": "info@carono.ru",
+      "homepage": "https://carono.ru"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "~2.0",
+    "psr/http-client": "^1.0",
+    "carono/yii2-behaviors": "@stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "carono\\yii2parser\\": "src"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
+  }
+}
