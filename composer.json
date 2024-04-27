@@ -12,8 +12,7 @@
   ],
   "require": {
     "yiisoft/yii2": "~2.0",
-    "psr/http-client": "^1.0",
-    "carono/yii2-behaviors": "@stable"
+    "psr/http-client": "^1.0"
   },
   "autoload": {
     "psr-4": {

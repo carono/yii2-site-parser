@@ -3,11 +3,13 @@
 namespace carono\yii2parser;
 
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\FileCookieJar;
+use GuzzleHttp\Cookie\SetCookie;
 use Psr\Http\Client\ClientInterface;
-use yii\base\Model;
 use yii\helpers\FileHelper;
 
-abstract class SiteParser extends Model
+abstract class SiteParser
 {
     /**
      * @var ClientInterface
@@ -21,6 +23,14 @@ abstract class SiteParser extends Model
 
     protected $storePHPSESSID = true;
     public $cookieFolder = 'cookies';
+
+    public function __construct()
+    {
+        $cookie = $this->getCookieJar();
+        $options = array_merge(['cookies' => $cookie], $this->getClientOptions());
+        $client = new Client($options);
+        $this->setClient($client);
+    }
 
     public function setClient(ClientInterface $client)
     {
@@ -41,24 +51,12 @@ abstract class SiteParser extends Model
 
     public function get($uri, $options = [])
     {
-//        $response = $this->getClient()->get($uri, $options);
-//        if ($this->storePHPSESSID) {
-//            foreach ($response->getHeader('Set-Cookie') as $c) {
-//                $cookie = SetCookie::fromString($c);
-//                if ($cookie->getName() === 'PHPSESSID') {
-//                    $cookie->setDomain(parse_url($uri, PHP_URL_HOST));
-//                    $cookie->setExpires(strtotime('+7 day'));
-//                    $this->getCookieJar()->setCookie($cookie);
-//                    break;
-//                }
-//            }
-//        }
-        return $response;
+        return $this->getClient()->get($uri, $options);
     }
 
     public function post($uri, $options = [])
     {
-        return $this->getClient()->post($uri, $options);
+       return $this->getClient()->post($uri, $options);
     }
 
     public function getClientOptions()
@@ -88,23 +86,21 @@ abstract class SiteParser extends Model
 
     public function getCookieJar()
     {
-//        try {
-//            return $this->_cookieJar ?: $this->_cookieJar = new FileCookieJar($this->getCookieFile());
-//        } catch (\Exception $e) {
-//            \Yii::error($e);
-//            $this->clearCookies();
-//            return $this->getCookieJar();
-//        }
+        try {
+            return $this->_cookieJar ?: $this->_cookieJar = new FileCookieJar($this->getCookieFile(), true);
+        } catch (\Exception $e) {
+            \Yii::error($e);
+            $this->clearCookies();
+            return $this->getCookieJar();
+        }
     }
 
     /**
-     * @return Client
+     * @return ClientInterface
      */
     public function getClient()
     {
-//        $cookie = $this->getCookieJar();
-//        $options = array_merge(['cookies' => $cookie], $this->getClientOptions());
-//        return $this->_client ?: $this->_client = new Client($options);
+        return $this->_client;
     }
 
     public function loginIfNeed()
